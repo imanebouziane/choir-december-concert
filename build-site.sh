@@ -53,7 +53,7 @@ EOF
   echo "<body>"
   # Body part, with the share link pointing at the live site instead of the artifact
   sed -n '/^<\/style>$/,$p' "$SRC" | tail -n +2 \
-    | sed "s|^const PAGE_URL  = .*|const PAGE_URL  = \"$SITE_URL\"; // public link to this page (empty = current address)|"
+    | sed "s|^const PAGE_URL  = .*|const PAGE_URL  = \"${SITE_URL:+$SITE_URL/}\"; // public link to this page (empty = current address)|"
   echo "</body>"
   echo "</html>"
 } > "$OUT/index.html"

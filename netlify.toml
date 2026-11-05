@@ -1,0 +1,10 @@
+# Netlify: la page du concert est servie sur https://nissae-tanjis.netlify.app/december2026/
+# et la racine du site redirige vers elle.
+[build]
+  command = "bash build-site.sh https://nissae-tanjis.netlify.app/december2026 && rm -rf dist && mkdir -p dist && cp -r site dist/december2026"
+  publish = "dist"
+
+[[redirects]]
+  from = "/"
+  to = "/december2026/"
+  status = 302
