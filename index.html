@@ -212,8 +212,7 @@ section.block { padding-block: 64px; border-bottom: 1px solid var(--line); displ
 .guest-text .ig:hover { text-decoration: underline; }
 
 /* Host: same parts as the guest block, mirrored (text on the right, portrait on the left) */
-.guest.host { grid-template-columns: 1fr minmax(240px, 340px); }
-.host .guest-photo img { aspect-ratio: 4 / 5; object-position: 50% 20%; }
+.guest.host { grid-template-columns: 1fr minmax(260px, 340px); }
 .host .guest-text h2 { font-family: var(--font-display); font-style: normal; font-size: clamp(2.2rem, 6vw, 3.2rem); line-height: 1.2; letter-spacing: 0; }
 
 /* Gallery: one wide stage shot, then a row of three, then a row of two */
@@ -291,9 +290,7 @@ footer .fname { font-family: var(--font-display); font-size: 1.3rem; color: var(
   .av { width: 96px; height: 96px; }
   .choir-track .cn { font-size: .92rem; }
   .band { gap: 22px 10px; }
-  .guest, .guest.host { grid-template-columns: 1fr; gap: 24px; }
-  .host .guest-photo { order: -1; width: min(100%, 320px); justify-self: center; }
-  .band .who { font-size: 1.05rem; }
+  .guest, .guest.host { grid-template-columns: 1fr; gap: 24px; }  .band .who { font-size: 1.05rem; }
   .facts { grid-template-columns: 1fr; }
   .facts .fact:nth-child(odd), .facts .fact:nth-child(even) { padding-inline: 0; border-inline-start: 0; }
   .fact { grid-template-columns: 7rem 1fr; }
@@ -495,12 +492,14 @@ footer .fname { font-family: var(--font-display); font-size: 1.3rem; color: var(
       <div class="guest-text">
         <span class="label">تقديم الحفل</span>
         <h2>سعاد ازعيتراوي</h2>
-        <span class="origin"><span class="star" aria-hidden="true"></span>صحافية · القناة الثانية <span dir="ltr">2M</span></span>
+        <span class="origin"><span class="star" aria-hidden="true"></span>صحافية بالقناة الثانية <span dir="ltr">2M</span></span>
         <p>صحافية مغربية بالقناة الثانية منذ سنة 2005، تدرّجت فيها من المراسلة الميدانية إلى رئاسة تحرير الأخبار. عرفها الجمهور ببورتريهات برنامج «ضيف الأحد»، حيث حاورت وجوهاً من عالم الفن والفكر والثقافة، قبل أن تجمع عدداً منها في كتابها «أثر». بصوتها وحسّها الثقافي، ترافقنا في هذه الأمسية وتقدّم فقراتها.</p>
         <a class="ig" href="https://www.instagram.com/souad_azaitraoui/" target="_blank" rel="noopener" dir="ltr">@souad_azaitraoui</a>
       </div>
-      <figure class="guest-photo">
-        <img src="photos/souad-azaitraoui.jpg" alt="الصحافية سعاد ازعيتراوي" width="640" height="738" loading="lazy">
+      <figure class="maestra-photo">
+        <div class="star s1" aria-hidden="true"></div>
+        <div class="star s2" aria-hidden="true"></div>
+        <img src="photos/souad-azaitraoui.jpg" alt="الصحافية سعاد ازعيتراوي" width="640" height="738" loading="lazy" style="object-position: 50% 20%">
       </figure>
     </div>
   </section>
