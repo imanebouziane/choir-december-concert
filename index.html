@@ -135,7 +135,7 @@ section.block { padding-block: 64px; border-bottom: 1px solid var(--line); displ
 
 /* Maestra: text on the right (RTL start), portrait on the left framed by two zellige stars */
 .maestra { display: grid; grid-template-columns: 1fr minmax(260px, 340px); gap: 56px; align-items: center; }
-.maestra-photo { position: relative; margin: 0; padding: 48px; isolation: isolate; }
+.maestra-photo { position: relative; margin: 0; padding: 48px; isolation: isolate; overflow: hidden; }
 .maestra-photo img {
   position: relative; z-index: 1; display: block; width: 100%; height: auto;
   aspect-ratio: 3 / 4; object-fit: cover; object-position: 40% 30%;
@@ -144,6 +144,33 @@ section.block { padding-block: 64px; border-bottom: 1px solid var(--line); displ
 .maestra-photo .star { position: absolute; z-index: 0; aspect-ratio: 1; }
 .maestra-photo .star.s1 { width: 78%; top: 0; inset-inline-end: 0; opacity: .75; animation: turn 120s linear infinite; }
 .maestra-photo .star.s2 { width: 46%; bottom: 0; inset-inline-start: 0; opacity: .55; animation: turn 90s linear infinite reverse; }
+
+/* Choir members: horizontal scroll-snap carousel, generic avatar above each name */
+.choir-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
+.car-nav { display: flex; gap: 10px; }
+.car-nav[hidden] { display: none; }
+.car-btn {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
+  transition: border-color .15s ease, opacity .15s ease;
+}
+.car-btn:hover:not(:disabled) { border-color: var(--brass); color: var(--brass); }
+.car-btn:disabled { opacity: .35; cursor: default; }
+.car-btn svg { width: 20px; height: 20px; }
+.choir-track {
+  list-style: none; margin: 0; padding: 4px 2px 8px;
+  display: grid; grid-auto-flow: column; grid-auto-columns: 132px; gap: 20px;
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.choir-track::-webkit-scrollbar { display: none; }
+.choir-track li { scroll-snap-align: start; display: grid; gap: 12px; justify-items: center; text-align: center; min-width: 0; }
+.av {
+  width: 112px; height: 112px; border-radius: 50%; overflow: hidden; display: block;
+  background: var(--brass-soft); color: var(--brass); border: 1px solid var(--line);
+}
+.av svg { display: block; width: 100%; height: 100%; }
+.choir-track .cn { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.35; }
 
 /* Band: one entry per musician, instrument above name */
 .band { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 28px 16px; }
@@ -255,6 +282,9 @@ footer .fname { font-family: var(--font-display); font-size: 1.3rem; color: var(
   .gallery figure, .gallery figure.half { grid-column: span 1; }
   .gallery figure.wide { grid-column: span 2; }
   .gallery figure.wide img { aspect-ratio: 16 / 9; }
+  .choir-track { grid-auto-columns: 112px; gap: 14px; }
+  .av { width: 96px; height: 96px; }
+  .choir-track .cn { font-size: 1.05rem; }
   .band { gap: 22px 10px; }
   .guest { grid-template-columns: 1fr; gap: 24px; }
   .band .who { font-size: 1.05rem; }
@@ -267,7 +297,7 @@ footer .fname { font-family: var(--font-display); font-size: 1.3rem; color: var(
 }
 @media (prefers-reduced-motion: reduce) {
   .hero .star.big, .maestra-photo .star { animation: none; }
-  .btn, .faq summary::after { transition: none; }
+  .btn, .faq summary::after, .car-btn { transition: none; }
 }
 </style>
 
@@ -347,6 +377,53 @@ footer .fname { font-family: var(--font-display); font-size: 1.3rem; color: var(
         <img src="photos/zakiya-yakhlef.jpg" alt="المايسترا زكية يخلف تعزف على الكمان بقفطان أحمر مطرّز بالذهبي" width="1200" height="1600" loading="lazy">
       </figure>
     </div>
+  </section>
+
+  <section class="block" id="choir">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="avatar-f" viewBox="0 0 100 100">
+        <path fill="currentColor" d="M50 17c-17 0-27 13-26 29 1 13-2 23-8 31 9 3 19 2 25-2V62h18v13c6 4 16 5 25 2-6-8-9-18-8-31 1-16-9-29-26-29Z"/>
+        <path fill="currentColor" opacity=".9" d="M16 100c1-16 12-26 26-28 3 4 5 6 8 6s5-2 8-6c14 2 25 12 26 28Z"/>
+        <ellipse fill="var(--surface)" opacity=".85" cx="50" cy="45" rx="13" ry="16"/>
+        <path fill="currentColor" d="M36 42c2-11 9-17 17-17 6 0 11 4 13 10-9-1-19 2-30 7Z"/>
+      </symbol>
+    </svg>
+    <div class="choir-head">
+      <div class="block-head">
+        <span class="label">الكورال</span>
+        <h2>أصوات الكورال</h2>
+        <p>نساء من طنجة، من مهن ومجالات مختلفة، يجمعهن حبّ الطرب والتراث الموسيقي لشمال المغرب.</p>
+      </div>
+      <div class="car-nav js-car-nav">
+        <button class="car-btn js-car-prev" type="button" aria-label="السابق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </button>
+        <button class="car-btn js-car-next" type="button" aria-label="التالي">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Ordre alphabétique (prénom, puis nom) -->
+    <ul class="choir-track" tabindex="0" aria-label="عضوات الكورال">
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">أحلام زيطان</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">أسماء البخاري</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">أسماء الوزاني</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">أمل بن يعيش</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">أمينة المحجوبي</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">إيمان بوزيان</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">إيمان هلالي</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">جميلة بركات</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">جنان الصحباني</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">سناء العشيري</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">علية بوزرود</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">لمياء العابد</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">منى الرمال الأبيض</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">ندى البقالي</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">نزهة المرابط</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">نعيمة معاش</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">هدى الورياغلي</span></li>
+      <li><span class="av"><svg aria-hidden="true"><use href="#avatar-f"/></svg></span><span class="cn">ياسمينة العيدي</span></li>
+    </ul>
   </section>
 
   <section class="block" id="band">
@@ -524,6 +601,29 @@ document.getElementById("copy-link").addEventListener("click", () => {
     navigator.clipboard.writeText(url).then(done, () => { toast.textContent = url; });
   } catch (e) { toast.textContent = url; }
 });
+
+// Choir carousel (RTL: "next" scrolls toward the left)
+(() => {
+  const track = document.querySelector(".choir-track");
+  const nav = document.querySelector(".js-car-nav");
+  const prev = document.querySelector(".js-car-prev");
+  const next = document.querySelector(".js-car-next");
+  if (!track) return;
+  const smooth = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  const step = () => Math.max(track.clientWidth * 0.8, 150);
+  next.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: smooth }));
+  prev.addEventListener("click", () => track.scrollBy({ left: step(), behavior: smooth }));
+  const update = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    const pos = Math.abs(track.scrollLeft);
+    nav.hidden = max <= 2;
+    prev.disabled = pos <= 2;
+    next.disabled = pos >= max - 2;
+  };
+  track.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
+})();
 
 // Countdown
 const pad = n => String(n).padStart(2, "0");
