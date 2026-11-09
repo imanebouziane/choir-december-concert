@@ -12,7 +12,7 @@ rm -rf "$OUT"
 mkdir -p "$OUT/photos"
 
 # Copy only the photos the page uses
-grep -o 'photos/[A-Za-z0-9._-]*\.jpg' "$SRC" | sort -u | while read -r p; do cp "$p" "$OUT/$p"; done
+grep -oE 'photos/[A-Za-z0-9._-]*\.(jpe?g|png|webp)' "$SRC" | sort -u | while read -r p; do cp "$p" "$OUT/$p"; done
 
 TITLE="كورال نساء تنجيس · حفل 12 دجنبر 2026"
 DESC="حفل موسيقي لكورال نساء تنجيس بقيادة المايسترا زكية يخلف، يوم السبت 12 دجنبر 2026 بقصر الفنون والثقافة بطنجة."
