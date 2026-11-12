@@ -584,6 +584,10 @@ footer .fname { font-family: var(--font-display); font-size: 1.3rem; color: var(
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.1v3h2.5V21h2.9Z"/></svg>
         فيسبوك
       </a>
+      <button class="btn btn-ghost" id="share-ig" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        إنستغرام
+      </button>
       <button class="btn btn-ghost" id="copy-link" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
         نسخ الرابط
@@ -623,11 +627,35 @@ document.getElementById("share-wa").href = "https://wa.me/?text=" + encodeURICom
 document.getElementById("share-fb").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
 
 const toast = document.getElementById("toast");
-document.getElementById("copy-link").addEventListener("click", () => {
-  const done = () => { toast.textContent = "تم نسخ الرابط"; setTimeout(() => toast.textContent = "", 2500); };
+const say = (msg, ms = 2500) => { toast.textContent = msg; if (ms) setTimeout(() => { if (toast.textContent === msg) toast.textContent = ""; }, ms); };
+const copyLink = (msg = "تم نسخ الرابط") => {
   try {
-    navigator.clipboard.writeText(url).then(done, () => { toast.textContent = url; });
-  } catch (e) { toast.textContent = url; }
+    navigator.clipboard.writeText(url).then(() => say(msg, 4000), () => say(url, 0));
+  } catch (e) { say(url, 0); }
+};
+document.getElementById("copy-link").addEventListener("click", () => copyLink());
+
+// Instagram has no web share link. On phones, open the system share sheet with the concert
+// story image (1080 × 1920), so it can go straight into an Instagram story or DM.
+// Elsewhere, copy the link so it can be pasted into Instagram.
+const STORY_IMAGE = "photos/story-instagram.jpg";
+document.getElementById("share-ig").addEventListener("click", async () => {
+  const igFallback = () => copyLink("تم نسخ الرابط، الصقوه في إنستغرام (ستوري أو رسالة)");
+  if (!navigator.share) return igFallback();
+  try {
+    let file = null;
+    try {
+      const blob = await (await fetch(STORY_IMAGE)).blob();
+      file = new File([blob], "choristes-tanger-12-dejenbre.jpg", { type: "image/jpeg" });
+    } catch (e) {}
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "كورال نساء تنجيس", text: shareText });
+    } else {
+      await navigator.share({ title: "كورال نساء تنجيس", text: shareText, url });
+    }
+  } catch (e) {
+    if (e && e.name !== "AbortError") igFallback(); // AbortError = the person closed the share sheet
+  }
 });
 
 // Choir carousel: endless loop that slides one name at a time.
